@@ -5,10 +5,6 @@ const studentSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'users'
     },
-    batchID: {
-        type: Schema.Types.ObjectId,
-        ref: 'batches'
-    },
     basicInfo: {
 		name: {
             type: String,
@@ -217,10 +213,6 @@ const studentSchema = new mongoose.Schema({
 	gradiousFeedback: {
         type: String,
         required: true
-    },
-	isDeleted: {
-        type: Boolean,
-        default: false
     }
 }, { timestamps: true });
 
