@@ -25,6 +25,7 @@ router.route("/").post(async (req, res) => {
             status: 200,
             message: "Logged in successfully",
             data: {
+                id:user._id,
                 name: user.name,
                 role: user.role,
                 token: generateAccessToken(user),

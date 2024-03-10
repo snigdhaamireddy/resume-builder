@@ -12,6 +12,7 @@ const batchSchema = new mongoose.Schema({
     },
 	isDeleted: {
         type: Boolean,
+        required:true,
         default: false
     }
 }, { timestamps: true });

@@ -29,7 +29,7 @@ const LoginPage = () => {
   const [validCredentials, setValidCredentials] = React.useState(true);
   const [loginError, setLoginError] = React.useState("");
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  const passwordRegex = /^[a-zA-Z]{4}\d{4}$/;
+  const passwordRegex = /^[a-zA-Z]{4}@\d{4}$/;
 
   const handleChange = (event) => {
     setUserDetails({ ...userDetails, [event.target.name]: event.target.value });
@@ -57,7 +57,7 @@ const LoginPage = () => {
           password: userDetails.password
         })
         .then((res) => {
-          dispatch(loginAction({name: res.data.data.name, role: res.data.data.role, token: res.data.data.token, tokenExpiresAt: res.data.data.tokenExpiresAt}));
+          dispatch(loginAction({id:res.data.data.id,name: res.data.data.name, role: res.data.data.role, token: res.data.data.token, tokenExpiresAt: res.data.data.tokenExpiresAt}));
           setUserDetails({
             email: "",
             password: "",

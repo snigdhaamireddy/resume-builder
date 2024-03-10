@@ -1,0 +1,122 @@
+.usersAndInfo{
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.usersAndInfo>button:hover{
+    cursor: pointer;
+}
+.usersAndInfo>button{
+    background: #3498db;
+    font-family: Georgia, serif;
+    border: none; 
+    color: white;
+    padding: 15px 25px;
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease-in-out;
+}
+#addUserButton{
+    position: absolute;
+    right: 500px;
+    bottom: 599px;
+    background: #3498db; 
+    border: none; 
+    color: white;
+    padding: 14px 24px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-family: Georgia, serif;
+    font-size: 16px; 
+    margin: 4px 2px; 
+    cursor: pointer; 
+    border-radius: 5px; 
+    transition: background 0.3s ease-in-out;
+
+}
+#tableContainer{
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 30px;
+    padding:8px;
+}
+table{
+    margin-top: 30px;
+    width: 100%;
+    border-collapse: collapse;
+    border:2px solid rgb(9, 128, 161); 
+}
+th,td,td>button{
+    font-size: 18px;
+    font-family: Georgia, serif;
+}
+
+table {
+    table-layout: fixed; 
+    width: 100%;
+    border-collapse: collapse;
+}
+td,th{
+    text-align: center;
+    padding: 10px; 
+    border-bottom: 1px solid #ddd; 
+}
+th {
+    background-color: #f55533;
+    color: white; 
+    width: 100%;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2; 
+}
+
+tr:hover {
+    background-color: #ddd; 
+    cursor: pointer;
+}
+
+input[type='text'] {
+    width: 60%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px; 
+    font-size: 18px;
+}
+
+#editButton, #deleteButton,#resumeButton {
+    border: none;
+    color: white; 
+    padding: 8px 16px; 
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out; 
+}
+#editButton{
+    background-color: #4CAF50; 
+}
+#deleteButton{
+    background-color: #d04343; 
+}
+#resumeButton{
+    background-color: cadetblue;
+}
+p{
+    font-family: Georgia, serif;
+    font-size:larger
+}
+
+
+ 
