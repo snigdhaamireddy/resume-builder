@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
+const validator = require("validator");     
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
@@ -23,9 +23,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function(password) {
-                return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password);
-            },
-            message: 'Password must be at least 8 characters long, contain at least one letter and one number'
+                return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+            },  
+            message: 'Password must be at least 8 characters long, contain at least one letter,number and special character'
         }
     },
     role: {

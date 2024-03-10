@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const {Schema}=mongoose;
+const validator = require("validator"); 
 
 const studentSchema = new mongoose.Schema({
     userID: {

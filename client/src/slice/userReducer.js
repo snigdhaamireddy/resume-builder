@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  id:localStorage.getItem("id") ?? "",
   name: localStorage.getItem("name") ?? "",
   role: localStorage.getItem("role") ?? "",
   token: localStorage.getItem("token") ?? "",
@@ -12,10 +13,12 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
+      state.id = action.payload.id;
       state.name = action.payload.name;
       state.role = action.payload.role;
       state.token = action.payload.token;
       state.tokenExpiresAt = action.payload.tokenExpiresAt;
+      localStorage.setItem("id", action.payload.id);
       localStorage.setItem("name", action.payload.name);
       localStorage.setItem("role", action.payload.role);
       localStorage.setItem("token", action.payload.token);
@@ -23,6 +26,7 @@ export const userSlice = createSlice({
       return state;
     },
     logout: (state) => {
+      state.id= "";
       state.name = "";
       state.role = "";
       state.token = "";

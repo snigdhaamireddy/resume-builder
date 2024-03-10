@@ -4,6 +4,9 @@ import { LinearProgress } from "@mui/material";
 import { useSelector } from "react-redux";
 import NotFoundPage from "../pages/NotFoundPage/NotFound";
 import { getLoginStatus } from "../slice/userReducer";
+import Navbar from "./Navbar/Navbar";
+import UsersPage from "../pages/UsersPage/usersPage";
+import './Navbar/styles.css';
 
 const LoginPage = lazy(() => import("../pages/loginPage/loginPage"));
 
@@ -25,6 +28,13 @@ const RoutesComponent = () => {
                 element={isUserLoggedIn ? <Navigate to={"/batches"} /> : <LoginPage />}
             />
             <Route element={<NotFoundPage />} path="*" />
+            <Route
+                path="/batches/:id"
+                element={<>
+                <Navbar></Navbar>
+                <UsersPage></UsersPage></>}
+            >
+            </Route>
         </Routes>
         </Suspense>
     )
