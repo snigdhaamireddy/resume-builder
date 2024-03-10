@@ -1,22 +1,35 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { LoginBox, LoginContainer } from "./login.styles";
-import InputAdornment from '@mui/material/InputAdornment';
-import { Alert, IconButton } from '@mui/material';
 import { Email, Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import { lightTheme } from "../../Constants";
+import { api } from "../../api";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../../slice/userReducer";
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [showPassword, setShowPassword] = React.useState(false);
   const [userDetails, setUserDetails] = React.useState({
     email: "",
     password: "",
   });
   const [validCredentials, setValidCredentials] = React.useState(true);
+  const [loginError, setLoginError] = React.useState("");
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const passwordRegex = /^[a-zA-Z]{4}\d{4}$/;
 
   const handleChange = (event) => {
     setUserDetails({ ...userDetails, [event.target.name]: event.target.value });
@@ -31,18 +44,31 @@ const LoginPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if(userDetails.password){
-      console.log({
-        email: userDetails.email,
-        password: userDetails.password,
-      });
-      setUserDetails({
-        email: "",
-        password: "",
-      });
-      setValidCredentials(true);
-    } else{
+    if (!emailRegex.test(userDetails.email)) {
       setValidCredentials(false);
+      setLoginError("Invalid Email");
+    } else if (!passwordRegex.test(userDetails.password)) {
+      setValidCredentials(false);
+      setLoginError("Invalid Password");
+    } else {
+      api
+        .post('/login', {
+          email: userDetails.email,
+          password: userDetails.password
+        })
+        .then((res) => {
+          dispatch(loginAction({name: res.data.data.name, role: res.data.data.role, token: res.data.data.token, tokenExpiresAt: res.data.data.tokenExpiresAt}));
+          setUserDetails({
+            email: "",
+            password: "",
+          });
+          setValidCredentials(true);
+          navigate("/batches");
+        })
+        .catch((err) => {
+          setValidCredentials(false);
+          setLoginError(err.response.data.message);
+        });
     }
   };
 
@@ -54,7 +80,7 @@ const LoginPage = () => {
           LOGIN
         </Typography>
         {!validCredentials && (
-          <Alert severity="error">Invalid Username or Password</Alert>
+          <Alert severity="error">{loginError}</Alert>
         )}
         <Box
           component="form"

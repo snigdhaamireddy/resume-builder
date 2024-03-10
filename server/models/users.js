@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
     },
     isDeleted: {
         type: Boolean,
-        default: False
+        default: false
     }
 });
 
@@ -64,16 +64,6 @@ userSchema.pre('save', function(next) {
         next();
     }
 }, { timestamps: true });
-
-userSchema.methods.comparePassword = function(password, callback) {
-    bcrypt.compare(password, this.password, function(error, isMatch) {
-      if (error) {
-        return callback(error);
-      } else {
-        callback(null, isMatch);
-      }
-    });
-};
 
 const User = mongoose.model("users", userSchema);
 
