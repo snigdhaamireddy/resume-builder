@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+// import { makeStyles } from "@material-ui/core/styles";
 import Navbar from "../../components/Navbar/Navbar";
 import Button from "@mui/material/Button";
 // import IconButton from "@mui/material/IconButton";
@@ -10,50 +10,54 @@ import { Link } from "react-router-dom";
 import {
   Grid,
   Card,
+  CardActions,
   CardContent,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import { lightTheme } from "../../Constants";
+import {useNavigate} from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
-  card: {
-    position: "relative",
-    height: "150px",
-    width: "300px",
-    backgroundColor: "lightblue",
-    "&:hover": {
-      transform: "scale(1.05)",
-      "& $editDeleteButtons": {
-        opacity: 1,
-      },
-    },
-  },
-  batchCard: {
-    textAlign: "center",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  },
-  editDeleteButtons: {
-    position: "absolute",
-    bottom: theme.spacing(1),
-    right: theme.spacing(1),
-    opacity: 0,
-    transition: "opacity 0.3s ease-in-out",
-  },
-  addBatchButton: {
-    marginTop: "10px",
-    marginBottom: "10px",
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   card: {
+//     position: "relative",
+//     height: "150px",
+//     width: "300px",
+//     backgroundColor: "lightblue",
+//     "&:hover": {
+//       transform: "scale(1.05)",
+//       "& $editDeleteButtons": {
+//         opacity: 1,
+//       },
+//     },
+//   },
+//   batchCard: {
+//     textAlign: "center",
+//     position: "absolute",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//   },
+//   editDeleteButtons: {
+//     position: "absolute",
+//     bottom: theme.spacing(1),
+//     right: theme.spacing(1),
+//     opacity: 0,
+//     transition: "opacity 0.3s ease-in-out",
+//   },
+//   addBatchButton: {
+//     marginTop: "10px",
+//     marginBottom: "10px",
+//   },
+// }));
 
 const BatchGrid = () => {
-  const classes = useStyles();
+  // const classes = useStyles();
+  const navigate = useNavigate();
+
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setAddDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
@@ -213,8 +217,8 @@ const BatchGrid = () => {
       >
         <Button
           variant="contained"
-          sx={{ color: lightTheme.palette.secondary.main }}
-          className={classes.addBatchButton}
+          sx={{ color: lightTheme.palette.secondary.main, marginTop: "10px", marginBottom: "10px" }}
+          // className={classes.addBatchButton}
           onClick={handleAddBatch}
         >
           Add Batch
@@ -234,23 +238,47 @@ const BatchGrid = () => {
             }}
           >
             <Card
-              className={classes.card}
+              // className={classes.card}
+              sx={{position: "relative",
+              height: "150px",
+              width: "300px",
+              backgroundColor: "lightblue",
+              "& .editDeleteButtons": {
+                opacity: 0,
+              },
+              "&:hover": {
+                transform: "scale(1.05)",
+                "& .editDeleteButtons": {
+                  opacity: 1,
+                },
+              },}}
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              <CardContent>
-                <Link
+              <CardContent sx={{height: '100%'}}>
+                {/* <Link
                   to={`/batches/${batch._id}`}
-                  style={{ textDecoration: "none" }}
-                >
+                  style={{ textDecoration: "none",     
+                  display: 'flex',
+                  width: '100%',
+                  height: '70%' }}
+                > */}
                   <Typography
                     variant="h5"
                     component="div"
-                    className={classes.batchCard}
+                    // className={classes.batchCard}
+                    sx={{ textAlign: "center",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",}}
+                    onClick={() => navigate(`/batches/${batch._id}`)}
                   >
                     {batch.name}
                   </Typography>
-                </Link>
+
+                {/* </Link> */}
+              </CardContent>
                 {/* <IconButton
                   style={{
                     position: "absolute",
@@ -275,12 +303,37 @@ const BatchGrid = () => {
                     Delete
                   </MenuItem>
                 </Menu> */}
-
-                <div
-                  className={`${classes.editDeleteButtons} ${
+              <CardActions className={`editDeleteButtons ${
                     isHovered ? "visible" : "hidden"
                   }`}
-                >
+                  sx={{
+                    position: "absolute",
+                    bottom: (theme) => theme.spacing(1),
+                    right: (theme) => theme.spacing(1),
+                    transition: "opacity 0.3s ease-in-out",
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                    width: '100%',
+                    height: '30%',
+                    padding: '1rem 0rem'
+                  }}>
+                {/* <div
+                  className={`editDeleteButtons ${
+                    isHovered ? "visible" : "hidden"
+                  }`}
+                  style={{ position: "absolute",
+                  bottom: (theme) => theme.spacing(1),
+                  right: (theme) => theme.spacing(1),
+                  transition: "opacity 0.3s ease-in-out",
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-evenly',
+                  width: '100%',
+                  height: '30%',
+                  padding: '1rem 0rem'
+                }}
+                > */}
                   <Button
                     onClick={() => handleEditClick(batch)}
                     color="secondary"
@@ -293,8 +346,8 @@ const BatchGrid = () => {
                   >
                     Delete
                   </Button>
-                </div>
-              </CardContent>
+                {/* </div> */}
+              </CardActions>
             </Card>
           </Grid>
         ))}

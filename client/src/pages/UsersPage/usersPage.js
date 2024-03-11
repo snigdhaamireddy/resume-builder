@@ -4,7 +4,6 @@ import UserModal from "./addUserModal/UserModal";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-
 function UsersPage() {
   const params = useParams();
   useEffect(() => {
@@ -20,7 +19,7 @@ function UsersPage() {
         setBatchName(data[0].batchName);
       })
       .catch((error) => console.error("problem with fetch", error));
-  }, []);
+  }, [params.id]);
 
   const [users, setUsers] = useState([
     {
@@ -51,8 +50,7 @@ function UsersPage() {
   const [batchName, setBatchName] = useState("");
 
   const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-    
+  const closeModal = () => setIsModalOpen(false);
 
   async function toggleEdit(userIndex) {
     if (isEditing !== -1) {
@@ -99,7 +97,7 @@ function UsersPage() {
     newUsers.splice(userIndex, 1);
     setUsers(newUsers);
   }
-    function handleAddUser(user) {
+  function handleAddUser(user) {
     axios
       .post(`http://localhost:8080/batches/${params.id}`, user)
       .then((response) => {
