@@ -23,7 +23,7 @@ function App() {
   };
   
   useEffect(() => {
-    if(Date.now() >= tokenExpiresAt){
+    if(tokenExpiresAt !== 0 && Date.now() >= tokenExpiresAt){
       setOpen(true);
       setUserExpired(true);
       dispatch(logoutAction());
