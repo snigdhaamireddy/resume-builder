@@ -28,7 +28,8 @@ const LoginPage = () => {
   });
   const [validCredentials, setValidCredentials] = React.useState(true);
   const [loginError, setLoginError] = React.useState("");
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const passwordRegex = /^[a-zA-Z]{4}\d{4}$/;
 
   const handleChange = (event) => {
@@ -48,22 +49,38 @@ const LoginPage = () => {
       setValidCredentials(false);
       setLoginError("Invalid Email");
     } else if (!passwordRegex.test(userDetails.password)) {
+      console.log(passwordRegex);
+      console.log(passwordRegex.test(userDetails.password));
+      console.log(userDetails.password);
       setValidCredentials(false);
       setLoginError("Invalid Password");
     } else {
       api
-        .post('/login', {
+        .post("/login", {
           email: userDetails.email,
-          password: userDetails.password
+          password: userDetails.password,
         })
         .then((res) => {
-          dispatch(loginAction({name: res.data.data.name, role: res.data.data.role, token: res.data.data.token, tokenExpiresAt: res.data.data.tokenExpiresAt}));
+          dispatch(
+            loginAction({
+              id: res.data.data.id,
+              name: res.data.data.name,
+              role: res.data.data.role,
+              token: res.data.data.token,
+              tokenExpiresAt: res.data.data.tokenExpiresAt,
+            })
+          );
           setUserDetails({
             email: "",
             password: "",
           });
           setValidCredentials(true);
-          navigate("/batches");
+          const role = res.data.data.role;
+          if(role === "admin"){
+            navigate("/batches");
+          } else{
+            navigate("/form");
+          }
         })
         .catch((err) => {
           setValidCredentials(false);
@@ -73,15 +90,24 @@ const LoginPage = () => {
   };
 
   return (
-    <LoginContainer maxWidth={'100%'}>
+    <LoginContainer maxWidth={"100%"}>
       <LoginBox>
-        <Avatar alt="logo" src="https://gradious.com/wp-content/uploads/2021/09/Final-Logo-2.svg" variant="square" sx={{ width: 'fit-content'}} />
-        <Typography component="h1" variant="h6" mt={'2rem'} mb={'2rem'} fontWeight={600}>
+        <Avatar
+          alt="logo"
+          src="https://gradious.com/wp-content/uploads/2021/09/Final-Logo-2.svg"
+          variant="square"
+          sx={{ width: "fit-content" }}
+        />
+        <Typography
+          component="h1"
+          variant="h6"
+          mt={"2rem"}
+          mb={"2rem"}
+          fontWeight={600}
+        >
           LOGIN
         </Typography>
-        {!validCredentials && (
-          <Alert severity="error">{loginError}</Alert>
-        )}
+        {!validCredentials && <Alert severity="error">{loginError}</Alert>}
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -98,7 +124,7 @@ const LoginPage = () => {
             fullWidth
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start" sx={{ marginRight: '15px'}}>
+                <InputAdornment position="start" sx={{ marginRight: "15px" }}>
                   <Email />
                 </InputAdornment>
               ),
@@ -115,7 +141,7 @@ const LoginPage = () => {
             fullWidth
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start"  sx={{ marginRight: '15px'}}>
+                <InputAdornment position="start" sx={{ marginRight: "15px" }}>
                   <Key />
                 </InputAdornment>
               ),
@@ -130,7 +156,7 @@ const LoginPage = () => {
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
             id="password"
             name="password"
@@ -143,7 +169,11 @@ const LoginPage = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: "2rem", width: "fit-content", backgroundColor: lightTheme.palette.primary.main }}
+            sx={{
+              mt: "2rem",
+              width: "fit-content",
+              backgroundColor: lightTheme.palette.primary.main,
+            }}
           >
             LOGIN
           </Button>
