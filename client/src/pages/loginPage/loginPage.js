@@ -75,7 +75,12 @@ const LoginPage = () => {
             password: "",
           });
           setValidCredentials(true);
-          navigate("/batches");
+          const role = res.data.data.role;
+          if(role === "admin"){
+            navigate("/batches");
+          } else{
+            navigate("/form");
+          }
         })
         .catch((err) => {
           setValidCredentials(false);

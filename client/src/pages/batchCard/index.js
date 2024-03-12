@@ -1,59 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Navbar from "../../components/Navbar/Navbar";
 import Button from "@mui/material/Button";
-// import IconButton from "@mui/material/IconButton";
-// import Menu from "@mui/material/Menu";
-// import MenuItem from "@mui/material/MenuItem";
-// import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
 import {
   Grid,
   Card,
+  CardActions,
   CardContent,
   Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import { lightTheme } from "../../Constants";
-
-const useStyles = makeStyles((theme) => ({
-  card: {
-    position: "relative",
-    height: "150px",
-    width: "300px",
-    backgroundColor: "lightblue",
-    "&:hover": {
-      transform: "scale(1.05)",
-      "& $editDeleteButtons": {
-        opacity: 1,
-      },
-    },
-  },
-  batchCard: {
-    textAlign: "center",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-  },
-  editDeleteButtons: {
-    position: "absolute",
-    bottom: theme.spacing(1),
-    right: theme.spacing(1),
-    opacity: 0,
-    transition: "opacity 0.3s ease-in-out",
-  },
-  addBatchButton: {
-    marginTop: "10px",
-    marginBottom: "10px",
-  },
-}));
+import { useNavigate } from "react-router-dom";
 
 const BatchGrid = () => {
-  const classes = useStyles();
+  const navigate = useNavigate();
+
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setAddDialogOpen] = useState(false);
   const [editName, setEditName] = useState("");
@@ -97,7 +60,7 @@ const BatchGrid = () => {
   // ]);
 
   const handleEditClick = (batch) => {
-    console.log(batch)
+    console.log(batch);
     setEditName(batch.name);
     // setEditStartDate(batch.startDate);
     setSelectedBatch(batch);
@@ -158,12 +121,12 @@ const BatchGrid = () => {
       .then((deletedBatch) => {
         setBatches((prevBatches) =>
           prevBatches.filter((batch) => batch._id !== deletedBatch._id)
-        )
+        );
       })
       .catch((error) => {
         console.error("error updating batch:", error);
       });
-  }
+  };
 
   const handleAddBatch = () => {
     setEditName("");
@@ -202,7 +165,6 @@ const BatchGrid = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
       <div
         style={{
           display: "flex",
@@ -213,8 +175,10 @@ const BatchGrid = () => {
       >
         <Button
           variant="contained"
-          sx={{ color: lightTheme.palette.secondary.main }}
-          className={classes.addBatchButton}
+          sx={{
+            BackgroundColor: lightTheme.palette.primary.main,
+          }}
+          // className={classes.addBatchButton}
           onClick={handleAddBatch}
         >
           Add Batch
@@ -234,24 +198,45 @@ const BatchGrid = () => {
             }}
           >
             <Card
-              className={classes.card}
+              // className={classes.card}
+              sx={{
+                position: "relative",
+                height: "150px",
+                width: "300px",
+                backgroundColor: "lightblue",
+                "& .editDeleteButtons": {
+                  opacity: 0,
+                },
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  "& .editDeleteButtons": {
+                    opacity: 1,
+                  },
+                },
+              }}
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              <CardContent>
-                <Link
-                  to={`/batches/${batch._id}`}
-                  style={{ textDecoration: "none" }}
+              <CardContent
+                sx={{ height: "70%", padding: 0, cursor: "pointer" }}
+                onClick={() => navigate(`/batches/${batch._id}`)}
+              >
+                <Typography
+                  variant="h5"
+                  component="div"
+                  // className={classes.batchCard}
+                  sx={{
+                    textAlign: "center",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
                 >
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    className={classes.batchCard}
-                  >
-                    {batch.name}
-                  </Typography>
-                </Link>
-                {/* <IconButton
+                  {batch.name}
+                </Typography>
+              </CardContent>
+              {/* <IconButton
                   style={{
                     position: "absolute",
                     top: "8px",
@@ -275,26 +260,29 @@ const BatchGrid = () => {
                     Delete
                   </MenuItem>
                 </Menu> */}
-
-                <div
-                  className={`${classes.editDeleteButtons} ${
-                    isHovered ? "visible" : "hidden"
-                  }`}
+              <CardActions
+                className={`editDeleteButtons ${
+                  isHovered ? "visible" : "hidden"
+                }`}
+                sx={{
+                  transition: "opacity 0.3s ease-in-out",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  width: "100%",
+                  height: "30%",
+                }}
+              >
+                <Button
+                  onClick={() => handleEditClick(batch)}
+                  color="secondary"
                 >
-                  <Button
-                    onClick={() => handleEditClick(batch)}
-                    color="secondary"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(batch._id)}
-                    color="primary"
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </CardContent>
+                  Edit
+                </Button>
+                <Button onClick={() => handleDelete(batch._id)} color="primary">
+                  Delete
+                </Button>
+              </CardActions>
             </Card>
           </Grid>
         ))}
