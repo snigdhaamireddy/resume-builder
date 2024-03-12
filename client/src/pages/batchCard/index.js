@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import { makeStyles } from "@material-ui/core/styles";
-import Navbar from "../../components/Navbar/Navbar";
 import Button from "@mui/material/Button";
-// import IconButton from "@mui/material/IconButton";
-// import Menu from "@mui/material/Menu";
-// import MenuItem from "@mui/material/MenuItem";
-// import MenuIcon from "@mui/icons-material/Menu";
-import { Link } from "react-router-dom";
 import {
   Grid,
   Card,
@@ -19,43 +12,9 @@ import {
   TextField,
 } from "@mui/material";
 import { lightTheme } from "../../Constants";
-import {useNavigate} from "react-router-dom";
-
-// const useStyles = makeStyles((theme) => ({
-//   card: {
-//     position: "relative",
-//     height: "150px",
-//     width: "300px",
-//     backgroundColor: "lightblue",
-//     "&:hover": {
-//       transform: "scale(1.05)",
-//       "& $editDeleteButtons": {
-//         opacity: 1,
-//       },
-//     },
-//   },
-//   batchCard: {
-//     textAlign: "center",
-//     position: "absolute",
-//     top: "50%",
-//     left: "50%",
-//     transform: "translate(-50%, -50%)",
-//   },
-//   editDeleteButtons: {
-//     position: "absolute",
-//     bottom: theme.spacing(1),
-//     right: theme.spacing(1),
-//     opacity: 0,
-//     transition: "opacity 0.3s ease-in-out",
-//   },
-//   addBatchButton: {
-//     marginTop: "10px",
-//     marginBottom: "10px",
-//   },
-// }));
+import { useNavigate } from "react-router-dom";
 
 const BatchGrid = () => {
-  // const classes = useStyles();
   const navigate = useNavigate();
 
   const [isEditDialogOpen, setEditDialogOpen] = useState(false);
@@ -101,7 +60,7 @@ const BatchGrid = () => {
   // ]);
 
   const handleEditClick = (batch) => {
-    console.log(batch)
+    console.log(batch);
     setEditName(batch.name);
     // setEditStartDate(batch.startDate);
     setSelectedBatch(batch);
@@ -162,12 +121,12 @@ const BatchGrid = () => {
       .then((deletedBatch) => {
         setBatches((prevBatches) =>
           prevBatches.filter((batch) => batch._id !== deletedBatch._id)
-        )
+        );
       })
       .catch((error) => {
         console.error("error updating batch:", error);
       });
-  }
+  };
 
   const handleAddBatch = () => {
     setEditName("");
@@ -206,7 +165,6 @@ const BatchGrid = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
       <div
         style={{
           display: "flex",
@@ -217,7 +175,9 @@ const BatchGrid = () => {
       >
         <Button
           variant="contained"
-          sx={{ color: lightTheme.palette.secondary.main, marginTop: "10px", marginBottom: "10px" }}
+          sx={{
+            BackgroundColor: lightTheme.palette.primary.main,
+          }}
           // className={classes.addBatchButton}
           onClick={handleAddBatch}
         >
@@ -239,47 +199,44 @@ const BatchGrid = () => {
           >
             <Card
               // className={classes.card}
-              sx={{position: "relative",
-              height: "150px",
-              width: "300px",
-              backgroundColor: "lightblue",
-              "& .editDeleteButtons": {
-                opacity: 0,
-              },
-              "&:hover": {
-                transform: "scale(1.05)",
+              sx={{
+                position: "relative",
+                height: "150px",
+                width: "300px",
+                backgroundColor: "lightblue",
                 "& .editDeleteButtons": {
-                  opacity: 1,
+                  opacity: 0,
                 },
-              },}}
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  "& .editDeleteButtons": {
+                    opacity: 1,
+                  },
+                },
+              }}
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
             >
-              <CardContent sx={{height: '100%'}}>
-                {/* <Link
-                  to={`/batches/${batch._id}`}
-                  style={{ textDecoration: "none",     
-                  display: 'flex',
-                  width: '100%',
-                  height: '70%' }}
-                > */}
-                  <Typography
-                    variant="h5"
-                    component="div"
-                    // className={classes.batchCard}
-                    sx={{ textAlign: "center",
+              <CardContent
+                sx={{ height: "70%", padding: 0, cursor: "pointer" }}
+                onClick={() => navigate(`/batches/${batch._id}`)}
+              >
+                <Typography
+                  variant="h5"
+                  component="div"
+                  // className={classes.batchCard}
+                  sx={{
+                    textAlign: "center",
                     position: "absolute",
                     top: "50%",
                     left: "50%",
-                    transform: "translate(-50%, -50%)",}}
-                    onClick={() => navigate(`/batches/${batch._id}`)}
-                  >
-                    {batch.name}
-                  </Typography>
-
-                {/* </Link> */}
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  {batch.name}
+                </Typography>
               </CardContent>
-                {/* <IconButton
+              {/* <IconButton
                   style={{
                     position: "absolute",
                     top: "8px",
@@ -303,50 +260,28 @@ const BatchGrid = () => {
                     Delete
                   </MenuItem>
                 </Menu> */}
-              <CardActions className={`editDeleteButtons ${
-                    isHovered ? "visible" : "hidden"
-                  }`}
-                  sx={{
-                    position: "absolute",
-                    bottom: (theme) => theme.spacing(1),
-                    right: (theme) => theme.spacing(1),
-                    transition: "opacity 0.3s ease-in-out",
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-evenly',
-                    width: '100%',
-                    height: '30%',
-                    padding: '1rem 0rem'
-                  }}>
-                {/* <div
-                  className={`editDeleteButtons ${
-                    isHovered ? "visible" : "hidden"
-                  }`}
-                  style={{ position: "absolute",
-                  bottom: (theme) => theme.spacing(1),
-                  right: (theme) => theme.spacing(1),
+              <CardActions
+                className={`editDeleteButtons ${
+                  isHovered ? "visible" : "hidden"
+                }`}
+                sx={{
                   transition: "opacity 0.3s ease-in-out",
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                  width: '100%',
-                  height: '30%',
-                  padding: '1rem 0rem'
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  width: "100%",
+                  height: "30%",
                 }}
-                > */}
-                  <Button
-                    onClick={() => handleEditClick(batch)}
-                    color="secondary"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(batch._id)}
-                    color="primary"
-                  >
-                    Delete
-                  </Button>
-                {/* </div> */}
+              >
+                <Button
+                  onClick={() => handleEditClick(batch)}
+                  color="secondary"
+                >
+                  Edit
+                </Button>
+                <Button onClick={() => handleDelete(batch._id)} color="primary">
+                  Delete
+                </Button>
               </CardActions>
             </Card>
           </Grid>
