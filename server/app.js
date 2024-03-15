@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const loginRouter = require("./routers/login");
-// const users = require('./routers/users');
+const users = require('./routers/users');
 const batch = require("./routers/batches");
 
 const app = express();
@@ -19,7 +19,7 @@ app.use(cors({
 app.use(express.urlencoded({extended:true}))
 
 app.use("/login", loginRouter);
-// app.use('/users', users);
+app.use('/users', users);
 app.use("/batches", batch);
 
 app.listen(8080,()=>{
