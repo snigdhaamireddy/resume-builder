@@ -2,24 +2,18 @@ import { useState, useEffect } from "react";
 import "./usersPage.styles.css";
 import UserModal from "./addUserModal/UserModal";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import {api} from '../../api';
 
 function UsersPage() {
   const params = useParams();
   useEffect(() => {
-    fetch(`http://localhost:8080/batches/${params.id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network Response not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setUsers(data);
-        setBatchName(data[0].batchName);
-      })
-      .catch((error) => console.error("problem with fetch", error));
-  }, [params.id]);
+    api.get(`/batches/${params.id}`)
+       .then((response) => {
+         setUsers(response.data.data);
+         setBatchName(response.data.data[0].batchName);
+       })
+       .catch((error) => console.error("problem with axios", error));
+   }, [params.id]);
 
   const [users, setUsers] = useState([
     {
@@ -52,29 +46,24 @@ function UsersPage() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  async function toggleEdit(userIndex) {
+  function toggleEdit(userIndex) {
     if (isEditing !== -1) {
       const updatedUser = { ...users[userIndex], ...editedUser };
       try {
-        const response = await fetch(
-          `http://localhost:8080/batches/${updatedUser.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(editedUser),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Network response error");
-        }
-        const newUsers = [...users];
-        newUsers[userIndex] = updatedUser;
-        setUsers(newUsers);
-        setEditedUser({});
-        setisEditing(-1);
+        api.
+            put(
+            `/users/${updatedUser.id}`,
+            { ...editedUser, id: localStorage.getItem('id') },
+            )
+            .then((res)=>{
+                if(res.status==200){
+                    const newUsers = [...users];
+                    newUsers[userIndex] = updatedUser;
+                    setUsers(newUsers);
+                    setEditedUser({});
+                    setisEditing(-1);
+                }
+            })
       } catch (err) {
         console.log(err.message);
       }
@@ -82,24 +71,27 @@ function UsersPage() {
       setisEditing(userIndex);
     }
   }
-  async function handleDelete(userIndex) {
+  function handleDelete(userIndex) {
     try {
-      await fetch(`http://localhost:8080/batches/${userIndex}`, {
-        method: "DELETE",
+        api.delete(`/users/${userIndex}`, {
         headers: {
-          "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
-      });
+        data: {
+            id: localStorage.getItem('id')
+        }
+        });
     } catch (err) {
       console.log(err.message);
     }
     let newUsers = [...users];
-    newUsers.splice(userIndex, 1);
+    newUsers=newUsers.filter((user)=>user.id!==userIndex);
     setUsers(newUsers);
   }
   function handleAddUser(user) {
-    axios
-      .post(`http://localhost:8080/batches/${params.id}`, user)
+    user={...user,id:localStorage.getItem('id')};
+    api
+      .post(`/users/${params.id}`, user)
       .then((response) => {
         console.log(response.data);
       })
