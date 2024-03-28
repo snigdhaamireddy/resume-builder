@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: "student"
     },
-    phoneNumber: {
+    phone: {
         type: Number,
         required: true,
         validate: {

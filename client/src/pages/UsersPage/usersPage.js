@@ -7,7 +7,8 @@ import {api} from '../../api';
 function UsersPage() {
   const params = useParams();
   useEffect(() => {
-    api.get(`/batches/${params.id}`)
+    api
+    .get(`/batches/${params.id}`)
        .then((response) => {
          setUsers(response.data.data);
          setBatchName(response.data.data[0].batchName);
@@ -21,7 +22,7 @@ function UsersPage() {
       email: "xyz@gmail.com",
       phone: "83XXXXXXXX",
     },
-    {
+    { 
       name: "ayz",
       email: "xyz@gmail.com",
       phone: "83XXXXXXXX",
@@ -50,20 +51,20 @@ function UsersPage() {
     if (isEditing !== -1) {
       const updatedUser = { ...users[userIndex], ...editedUser };
       try {
-        api.
-            put(
-            `/users/${updatedUser.id}`,
-            { ...editedUser, id: localStorage.getItem('id') },
-            )
-            .then((res)=>{
-                if(res.status==200){
-                    const newUsers = [...users];
-                    newUsers[userIndex] = updatedUser;
-                    setUsers(newUsers);
-                    setEditedUser({});
-                    setisEditing(-1);
-                }
-            })
+        api
+          .put(
+          `/users/${updatedUser.id}`,
+          { ...editedUser, id: localStorage.getItem('id') },
+          )
+          .then((res)=>{
+              if(res.status===200){
+                  const newUsers = [...users];
+                  newUsers[userIndex] = updatedUser;
+                  setUsers(newUsers);
+                  setEditedUser({});
+                  setisEditing(-1);
+              }
+          })
       } catch (err) {
         console.log(err.message);
       }
@@ -73,14 +74,15 @@ function UsersPage() {
   }
   function handleDelete(userIndex) {
     try {
-        api.delete(`/users/${userIndex}`, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-        data: {
-            id: localStorage.getItem('id')
-        }
-        });
+        api
+          .delete(`/users/${userIndex}`, {
+          headers: {
+              "Content-Type": "application/json",
+          },
+          data: {
+              id: localStorage.getItem('id')
+          }
+          });
     } catch (err) {
       console.log(err.message);
     }
@@ -88,15 +90,17 @@ function UsersPage() {
     newUsers=newUsers.filter((user)=>user.id!==userIndex);
     setUsers(newUsers);
   }
-  function handleAddUser(user) {
-    user={...user,id:localStorage.getItem('id')};
+  function handleAddUser(users) {
+    const updatedUsers = users.map(user => {
+      return { ...user, id: localStorage.getItem('id') };
+   });
     api
-      .post(`/users/${params.id}`, user)
+      .post(`/users/${params.id}`, updatedUsers)
       .then((response) => {
         console.log(response.data);
       })
       .catch((error) => console.error(error));
-    setUsers([...users, user]);
+      setUsers(prevUsers => [...prevUsers, ...updatedUsers]);
   }
   if (flag)
     return (
@@ -199,18 +203,18 @@ function UsersPage() {
                     </td>
                   )}
                   {index !== isEditing ? (
-                    <td>{user.phoneNumber}</td>
+                    <td>{user.phone}</td>
                   ) : (
                     <td>
                       <input
                         type="text"
-                        name="phoneNumber"
+                        name="phone"
                         className="input"
-                        defaultValue={user.phoneNumber}
+                        defaultValue={user.phone}
                         onChange={(event) =>
                           setEditedUser({
                             ...editedUser,
-                            phoneNumber: event.target.value,
+                            phone: event.target.value,
                           })
                         }
                       />
