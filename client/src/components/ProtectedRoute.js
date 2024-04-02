@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navigate, Outlet } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
+import { Box } from "@mui/material";
 import Navbar from "./Navbar/Navbar";
 import { getLoginStatus, logoutAction } from "../slice/userReducer";
 import { setSnackbarAction } from "../slice/snackbarReducer";
@@ -29,7 +30,19 @@ function Protected() {
   return isUserLoggedIn ? (
     <>
       <Navbar />
-      <Outlet />
+      <Box
+        sx={{
+          display: "flex",
+          marginTop: "7vh",
+          maxHeight: "93vh",
+          overflowY: "auto",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
+      >
+        <Outlet />
+      </Box>
     </>
   ) : (
     <Navigate to="/login" />

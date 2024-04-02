@@ -1,16 +1,21 @@
 #container{
     background-color: black;
-    padding: 15px;
+    padding: 0.5rem 1rem;
     color:white;
     display: flex;
-    font-size: 25px;
+    position: fixed;
+    top: 0;
+    height: 7vh;
+    width: 100%;
     justify-content: space-between;
+    align-items: center;
 }
 #logoutButton{
     color:white;
     background-color: black;
     border: 2px solid white;
     font-family: Arial, Helvetica, sans-serif;
+    padding: 0.5rem 1rem;
 }
 #logoutButton:hover{
     cursor: pointer;
@@ -20,4 +25,5 @@
 }
 #x{
     display: flex;
+    align-items: center;
 }

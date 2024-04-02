@@ -7,7 +7,8 @@ import {
   Stepper,
   Typography,
 } from "@mui/material";
-import BasicInfo from "./BasicInfoComponent";
+import Section from "./SectionComponent";
+import { api } from "../../api";
 
 const steps = [
   "Basic Information",
@@ -18,51 +19,70 @@ const steps = [
   "Hobbies",
 ];
 
+const sectionKeys = [
+  "basicInfo",
+  "academicInfo",
+  "projects",
+  "certifications",
+  "achievements",
+  "hobbies"
+];
+
 const fieldNames = {
   "Basic Information": [
-    { key: "Photo", type: "text" },
-    { key: "Name", type: "text" },
-    { key: "Email", type: "text" },
-    { key: "Phone Number", type: "text" },
-    { key: "DOB", type: "text" },
-    { key: "Address", type: "text" },
-    { key: "Job Role", type: "text" },
-    { key: "Career Objective", type: "text" },
-    { key: "LinkedIn", type: "text" },
-    { key: "Github", type: "text" },
+    { key: "photo", label: "Photo", type: "text" },
+    { key: "name", label: "Name", type: "text" },
+    { key: "email", label: "Email", type: "text" },
+    { key: "phone", label: "Phone", type: "text" },
+    { key: "dob", label: "DOB", type: "date" },
+    { key: "address", label: "Address", type: "text" },
+    { key: "jobRole", label: "Job Role", type: "text" },
+    { key: "careerObjective", label: "Career Objective", type: "text" },
+    { key: "linkedIn", label: "LinkedIn URL", type: "text" },
+    { key: "gitHub", label: "GitHub URL", type: "text" },
+    { key: "leetcode", label: "LeetCode URL", type: "text", required: false },
+    { key: "hackerrank", label: "HackerRank URL", type: "text", required: false },
+    { key: "hackerearth", label: "HackerEarth URL", type: "text", required: false },
+    { key: "codechef", label: "CodeChef URL", type: "text", required: false },
+    { key: "codeforces", label: "CodeForces URL", type: "text", required: false },
+    { key: "geeksforgeeks", label: "GeeksForGeeks URL", type: "text", required: false },
   ],
-  "Education": [
-    { key: "Degree Name", type: "text" },
-    { key: "Board", type: "text" },
-    { key: "Institute Name", type: "text" },
-    { key: "Place", type: "text" },
-    { key: "Score", type: "text" },
-    { key: "Start Year", type: "text" },
-    { key: "End Year", type: "text" },
+  Education: [
+    { key: "degreeName", label: "Degree Name", type: "text" },
+    { key: "board", label: "Board", type: "text" },
+    { key: "instituteName", label: "Institute Name", type: "text" },
+    { key: "place", label: "Place", type: "text" },
+    { key: "score", label: "Score", type: "text" },
+    { key: "startYear", label: "Start Year", type: "year" },
+    { key: "endYear", label: "End Year", type: "year" },
   ],
-  "Projects": [
-    { key: "Title", type: "text" },
-    { key: "Description", type: "text" },
-    { key: "Technologies Used", type: "text" },
-    { key: "Demo Link", type: "text" },
-    { key: "Source Code Link", type: "text" },
-    { key: "Application Link", type: "text" },
+  Projects: [
+    { key: "title", label: "Title", type: "text" },
+    { key: "description", label: "Description", type: "text" },
+    { key: "technologies", label: "Technologies Used", type: "text", helperText: "Enter values seperated by comma(,)" },
+    { key: "demoLink", label: "Demo Link", type: "text" },
+    { key: "sourceCodeLink", label: "Source Code Link", type: "text" },
+    { key: "applicationLink", label: "Application Link", type: "text" },
   ],
-  "Certifications": [
-    { key: "Name", type: "text" },
-    { key: "Organisation", type: "text" },
+  Certifications: [
+    { key: "name", label: "Certificate Name", type: "text" },
+    { key: "organisation", label: "Organisation", type: "text" },
   ],
-  "Achievements": [
-    { key: "Achievement", type: "text" },
-  ],
-  "Hobbies": [
-    { key: "Hobby", type: "text" },
-  ]
+  Achievements: [{ key: "Achievement", label: "Achievement", type: "text" }],
+  Hobbies: [{ key: "Hobby", label: "Hobby", type: "text" }],
 };
 
 const UserForm = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [completed, setCompleted] = React.useState({});
+  const [errors, setErrors] = React.useState({
+    "Basic Information": [],
+    "Education": [],
+    "Projects": [],
+    "Certifications": [],
+    "Achievements": [],
+    "Hobbies": []
+  });
 
   const totalSteps = () => {
     return steps.length;
@@ -80,17 +100,39 @@ const UserForm = () => {
     return completedSteps() === totalSteps();
   };
 
-  const handleNext = () => {
+  const handleNext = (data) => {
     // const newActiveStep =
     //   isLastStep() && !allStepsCompleted()
     //     ? // It's the last step, but not all steps have been completed,
     //       // find the first step that has been completed
     //       steps.findIndex((step, i) => !(i in completed))
     //     : activeStep + 1;
-    const newCompleted = completed;
-    newCompleted[activeStep] = true;
-    setCompleted(newCompleted);
-    setActiveStep(activeStep + 1);
+    const userData = steps[activeStep] === "Basic Information" ? data[0] : data;
+    if(steps[activeStep] === "Projects"){
+      userData.forEach(ele => {
+        ele.technologies = JSON.stringify(ele.technologies.split(","));
+      });
+    }
+    api
+      .post("/form", { userID: localStorage.getItem("id"), sectionName: sectionKeys[activeStep], data: userData })
+      .then((res) => {
+        console.log(res);
+        const newCompleted = completed;
+        newCompleted[activeStep] = true;
+        setCompleted(newCompleted);
+        setActiveStep(activeStep + 1);
+        setErrors({
+          ...errors,
+          [steps[activeStep]]: []
+        });
+      })
+      .catch((err) => {
+        console.log(err.response.data.errors);
+        setErrors({
+          ...errors,
+          [steps[activeStep]]: err.response.data.errors
+        });
+      })
   };
 
   const handleBack = () => {
@@ -115,22 +157,35 @@ const UserForm = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <div>
-        {allStepsCompleted() ? (
-          <React.Fragment>
-            <Typography sx={{ mt: 2, mb: 1 }}>
-              Thank you for filling. Form is submitted successfully.
-            </Typography>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />
-              <Button variant="contained" onClick={handleReset}>
-                Return to home
-              </Button>
-            </Box>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <Stepper nonLinear activeStep={activeStep} alternativeLabel>
+      {allStepsCompleted() ? (
+        <React.Fragment>
+          <Typography sx={{ mt: 2, mb: 1 }}>
+            Thank you for filling. Form is submitted successfully.
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+            <Box sx={{ flex: "1 1 auto" }} />
+            <Button variant="contained" onClick={handleReset}>
+              Return to home
+            </Button>
+          </Box>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <Box
+            sx={{
+              backgroundColor: "white",
+              position: "fixed",
+              width: "100%",
+              zIndex: 2,
+              padding: "2rem 2rem",
+            }}
+          >
+            <Stepper
+              nonLinear
+              activeStep={activeStep}
+              alternativeLabel
+              sx={{ padding: "0.5rem 1rem" }}
+            >
               {steps.map((label, index) => (
                 <Step key={label} completed={completed[index]}>
                   <StepButton
@@ -140,20 +195,19 @@ const UserForm = () => {
                 </Step>
               ))}
             </Stepper>
-            <Typography sx={{ mt: 2, mb: 1, py: 1 }}>
-              {steps[activeStep]}
-            </Typography>
-            <BasicInfo
-              activeStep={activeStep}
-              fieldNames={fieldNames[steps[activeStep]]}
-              handleBack={handleBack}
-              handleNext={handleNext}
-              handleComplete={handleComplete}
-              isLastStep={isLastStep}
-            />
-          </React.Fragment>
-        )}
-      </div>
+          </Box>
+          <Section
+            sectionName={steps[activeStep]}
+            activeStep={activeStep}
+            fieldNames={fieldNames[steps[activeStep]]}
+            handleBack={handleBack}
+            handleNext={handleNext}
+            handleComplete={handleComplete}
+            isLastStep={isLastStep}
+            errors={errors[steps[activeStep]]}
+          />
+        </React.Fragment>
+      )}
     </Box>
   );
 };

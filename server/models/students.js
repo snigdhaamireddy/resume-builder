@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const {Schema}=mongoose;
-const validator = require("validator"); 
 
 const studentSchema = new mongoose.Schema({
     userID: {
@@ -8,126 +7,118 @@ const studentSchema = new mongoose.Schema({
         ref: 'users'
     },
     basicInfo: {
-		name: {
-            type: String,
-            required: [true, 'Name is required'],
-            minLength: [2, 'Name must be at least 2 characters long'],
-            maxLength: [50, 'Name must not exceed 50 characters'],
-            match: [/^[a-zA-Z\s]*$/, 'Name can only contain letters and spaces']    
-        },
-		photo: {
-            type: String,
-            required: true
-        },
-		dob: {
-            type: Date,
-            required: true
-        },
-		phone: {
-            type: Number,
-            required: true,
-            validate: {
-                validator: function(val) {
-                    return val.toString().length === 10;
-                },
-                message: 'Invalid phone number. It must contain exactly 10 digits.'
-            }    
-        },
-		email: {
-            type: String,
-            required: true,
-            unique: true,
-            validate: [
-                { validator: validator.isEmail, msg: 'Invalid email' }
-            ]    
-        },
-		address: {
-            type: String,
-            required: true
-        },
-		jobRole: {
-            type: String,
-            required: true
-        },
-		careerObjective: {
-            type: String,
-            required: true
-        },
-		linkedIn: {
-            type: String,
-            required: true
-        },
-		github: {
-            type: String,
-            required: true
-        },
-		leetcode: {
-            type: String,
-        },
-		hackerrank: {
-            type: String,
-        },
-		hackerearth: {
-            type: String,
-        },
-		codechef: {
-            type: String,
-        },
-        codeForces: {
-            type: String,
-        },
-        geeksForGeeks: {
-            type: String,
+        type: {
+            name: {
+                type: String,
+                required: [true, 'Name is required'],
+                minLength: [2, 'Name must be at least 2 characters long'],
+                maxLength: [50, 'Name must not exceed 50 characters'],
+                match: [/^[a-zA-Z\s]*$/, 'Name can only contain letters and spaces']    
+            },
+            photo: {
+                type: String,
+                required: [true, 'Photo is required']
+            },
+            dob: {
+                type: Date,
+                required: [true, 'DOB is required']
+            },
+            phone: {
+                type: String,
+                required: [true, 'Phone Number is required'],
+                validate: {
+                    validator: function(val) {
+                        return val.length === 10;
+                    },
+                    message: 'Invalid phone number. It must contain exactly 10 digits.'
+                }    
+            },
+            email: {
+                type: String,
+                required: [true, 'Email is required'],  
+            },
+            address: {
+                type: String,
+                required: [true, 'Address is required']
+            },
+            jobRole: {
+                type: String,
+                required: [true, 'Job Role is required']
+            },
+            careerObjective: {
+                type: String,
+                required: [true, 'Career Objective is required']
+            },
+            linkedIn: {
+                type: String,
+                required: [true, 'LinkedIn is required']
+            },
+            github: {
+                type: String,
+                required: [true, 'GitHub is required']
+            },
+            leetcode: {
+                type: String,
+            },
+            hackerrank: {
+                type: String,
+            },
+            hackerearth: {
+                type: String,
+            },
+            codechef: {
+                type: String,
+            },
+            codeforces: {
+                type: String,
+            },
+            geeksforgeeks: {
+                type: String,
+            },
         },
 	},
     academicInfo: {
         type: [{
             degreeName: {
                 type: String,
-                required: true
+                required: [true, "Degree Name is required"]
             },
             board: {
                 type: String,
-                required: true
+                required: [true, "Board is required"]
             },
             instituteName: {
                 type: String,
-                required: true
+                required: [true, "Institue Name is required"]
             },
             place: {
                 type: String,
-                required: true
+                required: [true, "Place is required"]
             },
             score: {
                 type: Number,
-                required: true
+                required: [true, "Score is required"]
             },
             startYear: {
                 type: Number,
-                required: true
+                required: [true, "Start Year is required"]
             },
             endYear: {
                 type: Number,
-                required: true
+                required: [true, "End Year is required"]
             },
 	    }],
         default: [],
-        validate: {
-            validator: function(academicInfo) {
-                return academicInfo.length >= 3;
-            },
-            message: '10th, 12th and Graduation details must be specified'
-        }
     },
 	projects: {
         type: [{
             title: {
                 type: String,
-                required: true
+                required: [true, "Project Title is required"]
             },
             description: {
                 type: String,
-                required: true
+                required: [true, "Description is required"]
             },
             technologies: {
                 type: [String],
@@ -141,65 +132,53 @@ const studentSchema = new mongoose.Schema({
             },
             demoLink: {
                 type: String,
-                required: true
+                required: [true, "Demo Link is required"]
             },
             sourceCodeLink: {
                 type: String,
-                required: true
+                required: [true, "Source Code Link is required"]
             },
             applicationLink: {
                 type: String,
-                required: true
+                required: [true, "Application Link is required"]
             }
         }],
         default: [],
-        validate: {
-            validator: function(projects) {
-                return projects.length > 0;
-            },
-            message: 'At least one project must be specified'
-        }
     },
 	skills: {
         type: [{
             name: {
                 type: String,
-                required: true
+                required: [true, "Name is required"]
             },
             completedAssignments: {
                 type: Number,
-                required: true
+                required: [true, "Completed Assignments is required"]
             },
             assignmentsScore: {
                 type: Number,
-                required: true
+                required: [true, "Assignments Score is required"]
             },
             assessmentsScore: {
                 type: Number,
-                required: true
+                required: [true, "Assessments Score is required"]
             },
             overallScore: {
                 type: Number,
-                required: true
+                required: [true, "Overall Score is required"]
             },
 	    }],
         default: [],
-        validate: {
-            validator: function(skills) {
-                return skills.length > 0;
-            },
-            message: 'At least one skill must be specified'
-        }
     },
 	certifications: {
         type: [{
 		    name: {
                 type: String,
-                required: true
+                required: [true, "Certificate Name is required"]
             },
 		    organisation: {
                 type: String,
-                required: true
+                required: [true, "Organisation is required"]
             },
 	    }],
         default: [],
@@ -214,7 +193,6 @@ const studentSchema = new mongoose.Schema({
     },
 	gradiousFeedback: {
         type: String,
-        required: true
     }
 }, { timestamps: true });
 
