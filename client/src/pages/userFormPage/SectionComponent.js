@@ -1,160 +1,25 @@
-import { useState, useEffect } from "react";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from "dayjs";
+import { Add, Delete } from "@mui/icons-material";
 
 const Section = ({
+  details,
+  count,
   sectionName,
   activeStep,
   fieldNames,
+  addOne,
+  deleteOne,
+  handleChange,
+  handleDateChange,
   handleBack,
   handleNext,
-  handleComplete,
+  handleSave,
   isLastStep,
   errors
 }) => {
-  const [count, setCount] = useState({
-    'Basic Information': 1,
-    'Education': 0,
-    'Projects': 0,
-    'Certifications': 0,
-    'Achievements': 0,
-    'Hobbies': 0
-  });
-  const [details, setDetails] = useState({
-    'Basic Information': [{
-      'name': null,
-      'photo': null, 
-      'email': null, 
-      'phone': null, 
-      'dob': null, 
-      'address': null, 
-      'jobRole': null, 
-      'careerObjective': null, 
-      'linkedIn': null, 
-      'gitHub': null
-    }],
-    'Education': [], 
-    'Projects': [], 
-    'Certifications': [],
-    'Achievements': [],
-    'Hobbies': []
-  });
-
-  const template = {
-    'Basic Information': {
-      'name': null,
-      'photo': null, 
-      'email': null, 
-      'phone': null, 
-      'dob': null, 
-      'address': null, 
-      'jobRole': null, 
-      'careerObjective': null, 
-      'linkedIn': null, 
-      'gitHub': null
-    },
-    'Education': {
-      'degreeName': null,
-      'board': null,
-      'instituteName': null,
-      'place': null,
-      'score': null,
-      'startYear': null,
-      'endYear': null
-    }, 
-    'Projects': {
-      'title': null,
-      'description': null,
-      'technologies': null,
-      'demoLink': null,
-      'sourceCodeLink': null,
-      'applicationLink': null
-    }, 
-    'Certifications': {
-      'name': null,
-      'organisation': null
-    },
-    'Achievements': null,
-    'Hobbies': null
-  }
-
-  useEffect(() => {
-    console.log(count);
-    console.log(details);
-  });
-
-  const addOneMore = () => {
-    const values = details[sectionName];
-    values.push(template[sectionName]);
-    setDetails({
-      ...details, 
-      [sectionName]: values 
-    });
-    setCount({
-      ...count,
-      [sectionName]: count[sectionName] + 1
-    });
-  };
-
-  const deleteOne = (id) => {
-    const values = details[sectionName];
-    const updatedDetails = [];
-    for(let i=0; i<values.length; i++){
-      if(i !== id){
-        updatedDetails.push(values[i]);
-      }
-    }
-    setDetails({
-      ...details, 
-      [sectionName]: updatedDetails 
-    });
-    setCount({
-      ...count,
-      [sectionName]: count[sectionName] - 1
-    });
-  };
-
-  const handleChange = (event, id) => {
-    if(sectionName === "Achievements" || sectionName === "Hobbies"){
-      const values = details[sectionName];
-      const updatedDetails = values.map((val, index) => {
-        return index === id ? event.target.value : val; 
-      });
-      setDetails({ 
-        ...details, 
-        [sectionName]: updatedDetails
-      });
-    } else{
-      const values = details[sectionName];
-      const updatedDetails = values.map((val, index) => {
-        return index === id ? {
-          ...val,
-          [event.target.name]: event.target.value
-        } : val; 
-      });
-      setDetails({ 
-        ...details, 
-        [sectionName]: updatedDetails 
-      });
-    }
-  };
-
-  const handleDateChange = (date, key, id) => {
-    const values = details[sectionName];
-    const updatedDetails = values.map((val, index) => {
-      return index === id ? {
-        ...val,
-        [key]: date
-      } : val; 
-    });
-    setDetails({ 
-      ...details, 
-      [sectionName]: updatedDetails 
-    });
-  };
-
   return (
     <Box
       sx={{
@@ -189,7 +54,7 @@ const Section = ({
         </Box>
       }
       <Box width={"100%"}>
-        {[...Array(count[sectionName]).keys()].map((val, i) => (
+        {[...Array(count).keys()].map((val, i) => (
           <Box key={`entry${val}`}>
             <Box
               component="form"
@@ -207,14 +72,19 @@ const Section = ({
                     <TextField
                       key={field.key}
                       margin="normal"
-                      required={field.required ?? true}
+                      required={field.required ?? false}
                       fullWidth
                       id={field.key}
                       label={field.label}
                       name={field.key}
                       type={field.type}
                       helperText={field.helperText ?? ""}
-                      value={sectionName === "Achievements" || sectionName === "Hobbies" ? details[sectionName][i] : details[sectionName][i][field.key]}
+                      disabled={field.disabled ?? false}
+                      value={
+                        sectionName === "Achievements" || sectionName === "Hobbies" 
+                        ? (details[i] ?? "") 
+                        : (details[i][field.key] ?? "")
+                      }
                       onChange={(e) => handleChange(e, i)}
                       sx={{
                         width: "40%",
@@ -227,13 +97,16 @@ const Section = ({
                       <DatePicker
                         key={field.key}
                         margin="normal"
-                        required
+                        required={field.required ?? false}
                         fullWidth
                         id={field.key}
-                        label={`${field.label} *`}
+                        label={field.required ? `${field.label} *`: field.label}
                         name={field.key}
-                        value={details[sectionName][i][field.key]}
-                        onChange={(date) => handleDateChange(date, field.key, i)}
+                        value={details[i][field.key] ? dayjs(details[i][field.key]) : null}
+                        onChange={(date) => {
+                          const ISODate = dayjs(date).toISOString();
+                          handleDateChange(ISODate, field.key, i)
+                        }}
                         sx={{
                           width: "40%",
                           marginTop: "16px",
@@ -242,6 +115,57 @@ const Section = ({
                         renderInput={(params) => <TextField {...params} required />}
                       />
                     </LocalizationProvider>
+                  );
+                } else if (field.type === "file") {
+                  if (details[i][field.key] !==  null) {
+                    return (
+                      <Box
+                        sx={{
+                            width: "40%",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                      >
+                        <img
+                          src={details[i][field.key]}
+                          width="20%"
+                          height="50px"
+                        />
+                        <TextField
+                          key={field.key}
+                          margin="normal"
+                          required={field.required ?? false}
+                          fullWidth
+                          id={field.key}
+                          name={field.key}
+                          type={field.type}
+                          helperText={field.helperText ?? ""}
+                          onChange={(e) =>handleChange(e, i)}
+                          sx={{ width: "80%" }}
+                        />
+                      </Box>
+                    );
+                  }
+                  return (
+                    <TextField
+                      key={field.key}
+                      margin="normal"
+                      required={field.required ?? false}
+                      fullWidth
+                      id={field.key}
+                          // label={field.label}
+                          // value={
+                          //     details[sectionName][i][
+                          //         field.key
+                          //     ]
+                          // }
+                      name={field.key}
+                      type={field.type}
+                      helperText={field.helperText ?? ""}
+                      onChange={(e) => handleChange(e, i)}
+                      sx={{ width: "40%" }}
+                    />
                   );
                 } else if (field.type === "year") {
                   return (
@@ -253,9 +177,9 @@ const Section = ({
                         required
                         fullWidth
                         id={field.key}
-                        label={`${field.label} *`}
+                        label={field.required ? `${field.label} *`: field.label}
                         name={field.key}
-                        value={details[sectionName][i][field.key] ? dayjs(`${details[sectionName][i][field.key]}-01-01`): null}
+                        value={details[i][field.key] ? dayjs(`${details[i][field.key]}-01-01`): null}
                         onChange={(date) => {
                           const year = dayjs(date).year();
                           handleDateChange(year, field.key, i);
@@ -279,6 +203,7 @@ const Section = ({
                 onClick={() => deleteOne(val)}
                 sx={{ mr: 1, width: "fit-content" }}
               >
+                <Delete sx={{ marginRight: '5px' }} />
                 Delete
               </Button>
             )}
@@ -287,9 +212,10 @@ const Section = ({
         {sectionName !== "Basic Information" && (
           <Button
             variant="contained"
-            onClick={addOneMore}
+            onClick={addOne}
             sx={{ mt: 1, width: "fit-content" }}
           >
+            <Add sx={{ marginRight: '5px' }} />
             Add
           </Button>
         )}
@@ -305,13 +231,18 @@ const Section = ({
         </Button>
         <Box sx={{ flex: "1 1 auto" }} />
         {isLastStep() ? (
-          <Button variant="contained" onClick={handleComplete}>
+          <Button variant="contained" onClick={() => handleSave()}>
             Finish
           </Button>
         ) : (
-          <Button variant="contained" onClick={() => handleNext(details[sectionName])}>
-            Next
-          </Button>
+          <>
+            <Button variant="contained"  sx={{ mr: 1 }} onClick={() => handleNext()}>
+              Next
+            </Button>
+            <Button variant="contained" onClick={() => handleSave()}>
+              Save & Next
+            </Button>
+          </>
         )}
       </Box>
     </Box>

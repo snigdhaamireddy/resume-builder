@@ -76,6 +76,7 @@ const studentSchema = new mongoose.Schema({
                 type: String,
             },
         },
+        default: null
 	},
     academicInfo: {
         type: [{
@@ -108,7 +109,7 @@ const studentSchema = new mongoose.Schema({
                 required: [true, "End Year is required"]
             },
 	    }],
-        default: [],
+        default: () => null,
     },
 	projects: {
         type: [{
@@ -143,7 +144,7 @@ const studentSchema = new mongoose.Schema({
                 required: [true, "Application Link is required"]
             }
         }],
-        default: [],
+        default: () => null,
     },
 	skills: {
         type: [{
@@ -168,7 +169,7 @@ const studentSchema = new mongoose.Schema({
                 required: [true, "Overall Score is required"]
             },
 	    }],
-        default: [],
+        default: () => null,
     },
 	certifications: {
         type: [{
@@ -181,18 +182,19 @@ const studentSchema = new mongoose.Schema({
                 required: [true, "Organisation is required"]
             },
 	    }],
-        default: [],
+        default: () => null,
     },
 	achievements: {
         type: [String],
-        default: [],
+        default: () => null,
     },
 	hobbies: {
         type: [String],
-        default: [],
+        default: () => null,
     },
 	gradiousFeedback: {
         type: String,
+        default: null
     }
 }, { timestamps: true });
 

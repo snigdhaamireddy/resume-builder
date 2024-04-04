@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const loginRouter = require("./routers/login");
-// const users = require('./routers/users');
+const user = require('./routers/users');
 const batch = require("./routers/batches");
 const formRouter = require("./routers/form");
 
@@ -13,14 +13,14 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB error :", err));
 
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 app.use(cors({
   origin: "http://localhost:3000"
 }));
 app.use(express.urlencoded({extended:true}))
 
 app.use("/login", loginRouter);
-// app.use('/users', users);
+app.use('/user', user);
 app.use("/batches", batch);
 app.use("/form", formRouter);
 

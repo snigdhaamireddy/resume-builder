@@ -5,14 +5,19 @@ const router = express.Router();
 
 router.route("/").post(async (req, res) => {
     try{
-        console.log(req.body);
-        if(req.body.sectionName === "projects"){
-            const data = req.body.data;
-            data.forEach(ele => {
-                ele.technologies = JSON.parse(ele.technologies);
+        if(req.body.sectionName === "academicInfo" && req.body.data.length < 3){
+            return res.status(404).send({
+                status: 404,
+                message: "Invalid data",
+                errors: ["10th, 12th and graduation details must be specified"]
+            })
+        }
+        if(req.body.sectionName === "projects" && req.body.data.length < 1){
+            return res.status(404).send({
+                status: 404,
+                message: "Invalid data",
+                errors: ["Atleast one project must be specified"]
             });
-            req.body.data = data;
-            console.log(req.body);
         }
         const student = await Student.findOne({ userID: req.body.userID });
         try{
@@ -42,6 +47,24 @@ router.route("/").post(async (req, res) => {
             status: 500,
             message: 'Internal Server Error',
             errors: ["There is an issue with server. Couldn't submit data."]
+        });
+    }
+});
+
+router.route("/:id").get(async (req, res) => {
+    try{
+        const id = req.params.id;
+        const student = await Student.findOne({ userID: id });
+        return res.status(200).send({
+            status: 200,
+            message: "Data fetched successfully",
+            data: student
+        });
+    } catch(error) {
+        console.log(error);
+        return res.status(500).send({
+            status: 500,
+            message: 'Internal Server Error',
         });
     }
 });
