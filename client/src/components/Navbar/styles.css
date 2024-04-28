@@ -10,7 +10,7 @@
     color:white;
     background-color: black;
     border: 2px solid white;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Georgia, serif;
 }
 #logoutButton:hover{
     cursor: pointer;
