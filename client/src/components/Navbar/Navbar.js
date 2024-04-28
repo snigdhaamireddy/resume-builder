@@ -1,6 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles.css";
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { logoutAction } from "../../slice/userReducer";
+
 function Navbar() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+ 
+  const handleLogout = () => {
+    setShowModal(true);
+  };
+ 
+  const confirmLogout = () => {
+    dispatch(logoutAction());
+    navigate('/login');
+  };
+ 
+  const cancelLogout = () => {
+    setShowModal(false);
+  };
+
   return (
     <div id="container">
       <div id="x">
@@ -24,7 +45,16 @@ function Navbar() {
           Gradious
         </div>
       </div>
-      <button id="logoutButton">Logout</button>
+      <button id="logoutButton" onClick={handleLogout}>Logout</button>
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Are you sure you want to logout?</h2>
+            <button style={{background:'red', marginRight: '1rem', padding: '0.5rem 1rem', border: 0}} onClick={confirmLogout}>Yes</button>
+            <button style={{ padding: '0.5rem 1rem'}} onClick={cancelLogout}>No</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

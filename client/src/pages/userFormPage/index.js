@@ -11,7 +11,6 @@ import Section from "./SectionComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { setSnackbarAction } from "../../slice/snackbarReducer";
 import api from "../../api";
-import { getId } from "../../slice/userReducer";
 
 const steps = [
   "Basic Information",
@@ -204,7 +203,7 @@ const UserForm = () => {
   const fetchUserBasicDetails = () => {
     const userID = userState.id;
     api
-      .get(`/user/${userID}`)
+      .get(`/users/${userID}`)
       .then((res) => {
         const userData = res.data.data;
         setDetails({

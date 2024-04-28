@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { lightTheme } from "../../Constants";
 import { useNavigate } from "react-router-dom";
+import api from "../../api";
 
 const BatchGrid = () => {
   const navigate = useNavigate();
@@ -34,21 +35,32 @@ const BatchGrid = () => {
   //   setAnchorEl(null);
   // };
 
+  // useEffect(() => {
+  //   fetch("http://localhost:8080/batches")
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("network error");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       setBatches(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("problem with fetch", error);
+  //     });
+  // }, []);
   useEffect(() => {
-    fetch("http://localhost:8080/batches")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("network error");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setBatches(data);
+    api
+      .get("http://localhost:8080/batches")
+        .then((response) => {
+          setBatches(response.data);
       })
       .catch((error) => {
-        console.error("problem with fetch", error);
+        console.error("problem with axios", error);
       });
   }, []);
+
 
   // const [batches, setBatches] = useState([
   //   "Batch-1",
