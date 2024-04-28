@@ -8,9 +8,10 @@ import {
   Typography,
 } from "@mui/material";
 import Section from "./SectionComponent";
-import { api } from "../../api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSnackbarAction } from "../../slice/snackbarReducer";
+import api from "../../api";
+import { getId } from "../../slice/userReducer";
 
 const steps = [
   "Basic Information",
@@ -76,6 +77,7 @@ const fieldNames = {
 
 const UserForm = () => {
   const dispatch = useDispatch();
+  const userState = useSelector(state => state.user);
 
   const [activeStep, setActiveStep] = useState(0);
   const [completed, setCompleted] = useState({});
@@ -154,7 +156,7 @@ const UserForm = () => {
   const [sectionName, setSectionName] = useState("Basic Information");
 
   const fetchData = () => {
-    const id = localStorage.getItem("id");
+    const id = userState.id;
     api
       .get(`/form/${id}`)
       .then((res) => {
@@ -200,7 +202,7 @@ const UserForm = () => {
   };
 
   const fetchUserBasicDetails = () => {
-    const userID = localStorage.getItem("id");
+    const userID = userState.id;
     api
       .get(`/user/${userID}`)
       .then((res) => {
@@ -215,17 +217,22 @@ const UserForm = () => {
           }]
         })
       })
-      .catch((err) => console.log(err));
+      .catch((err) => { 
+        console.log(err);
+        dispatch(
+          setSnackbarAction({
+            snackbarOpen: true,
+            snackbarMessage: err.response.data.message,
+            snackbarType: "error",
+          })
+        );
+      });
   };
 
   useEffect(() => {
     fetchUserBasicDetails();
     fetchData();
   }, []);
-
-  useEffect(() => {
-    console.log(details);
-  });
 
   const addOneMore = () => {
     const values = details[sectionName];
@@ -372,7 +379,7 @@ const UserForm = () => {
         );
       })
       .catch((err) => {
-        console.log(err.response.data.errors);
+        console.log(err);
         setErrors({
           ...errors,
           [steps[activeStep]]: err.response.data.errors

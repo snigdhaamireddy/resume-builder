@@ -19,6 +19,16 @@ router.route("/").post(async (req, res) => {
                 errors: ["Atleast one project must be specified"]
             });
         }
+        if(req.body.sectionName === "basicInfo"){
+            const data = req.body.data;
+            if(!(data.leetcode || data.hackerrank || data.hackerearth || data.codechef || data.codeforces || data.geeksforgeeks)){
+                return res.status(404).send({
+                    status: 404,
+                    message: "Invalid data",
+                    errors: ["Atleast one coding platform account must be specified"]
+                });
+            }
+        }
         const student = await Student.findOne({ userID: req.body.userID });
         try{
             if(student) {
