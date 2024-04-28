@@ -21,7 +21,7 @@ router.get("/:id", async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
-      phoneNumber: user.phoneNumber,
+      phone: user.phone,
       batchName: batchName.name,
     }))
       return res.status(200).send({
