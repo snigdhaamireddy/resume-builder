@@ -17,7 +17,7 @@ router.route("/").post(async (req, res) => {
         const match = await bcrypt.compare(req.body.password, user.password);
         if(!match) {
             return res.status(404).send({
-                status: 404,
+                status: 404 ,
                 message: "Invalid Password",
             });
         }

@@ -49,9 +49,6 @@ const LoginPage = () => {
       setValidCredentials(false);
       setLoginError("Invalid Email");
     } else if (!passwordRegex.test(userDetails.password)) {
-      console.log(passwordRegex);
-      console.log(passwordRegex.test(userDetails.password));
-      console.log(userDetails.password);
       setValidCredentials(false);
       setLoginError("Invalid Password");
     } else {

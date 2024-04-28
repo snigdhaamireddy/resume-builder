@@ -92,7 +92,6 @@ router.post("/:id",async(req,res)=>{
                 role:'student',
                 phone:details.phone
             }
-            console.log(userDetails);
             //checking for role of user who is adding user
             if(await getUserRole(details.id)==='admin'){
                 const newUser=new User(userDetails);
