@@ -57,7 +57,7 @@ function UserModal({ isOpen, onClose, onAddUser }) {
             <button type="submit" id='addButton'>Add</button>
             <button type="button" id='closeButton' onClick={onClose}>Cancel</button>
           </form>
-        ) : (
+        ) : ( 
           <div>
             <input type="file" accept=".csv" onChange={handleFileUpload} />
             <button onClick={handleCSVSubmit}>Submit</button>
