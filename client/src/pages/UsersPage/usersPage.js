@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./usersPage.styles.css";
 import UserModal from "./addUserModal/UserModal";
 import { useParams } from "react-router-dom";
-import {api} from '../../api';
+import api from "../../api";
 
 function UsersPage() {
   const params = useParams();

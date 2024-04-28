@@ -1,6 +1,4 @@
 const express=require('express');
-const mongoose=require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;   
 const User = require('../models/users');
 const Student=require('../models/students');
 const Batchmembers=require('../models/batch_members');
@@ -15,27 +13,54 @@ const transporter = nodemailer.createTransport({
         pass: process.env.MAIL_PASSWORD
     }
 });
+
 async function getUserRole(id){
-    const userLoggedIn= await User.findOne(new ObjectId(id));
+    const userLoggedIn= await User.findById(id);
     return userLoggedIn.role;
-}
+};
+
+router.get("/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findById(id);
+        console.log(user);
+        if(!user || user.isDeleted){
+            return res.status(404).send({
+                status: 404,
+                message: "User Not Found"
+            });
+        }
+        return res.status(200).send({
+            status: 200,
+            message: "User fetched successfully",
+            data: user
+        });
+    } catch(error) {
+        return res.status(500).send({
+            status: 500,
+            message: "Internal server error"
+        });
+    }
+});
 
 router.put("/:id",async(req,res)=>{
     try {
         //checking for role of user who is editing
-        if(await getUserRole(req.body.id)==='admin'){
+        if(await getUserRole(req.body.id) === 'admin'){
             //Updating in User Schema
             await User.findByIdAndUpdate(req.params.id, req.body); 
             //Updating name email and phone in student schema
-            const filter = { userID: req.params.id };
-            await Student.findOneAndUpdate(filter,
-            {
-                $set:{
-                    'basicInfo.name': req.body.name,
-                    'basicInfo.email': req.body.email,
-                    'basicInfo.phone': req.body.phone,
-                }
-            })
+            const student = await Student.findOne({ userID:  req.params.id });
+            if(student) {
+                await Student.findOneAndUpdate(filter,
+                {
+                    $set:{
+                        'basicInfo.name': req.body.name,
+                        'basicInfo.email': req.body.email,
+                        'basicInfo.phone': req.body.phone,
+                    }
+                })
+            }
             return res.status(200).send({
                 status: 200,
                 message: "Edited Succesfully"

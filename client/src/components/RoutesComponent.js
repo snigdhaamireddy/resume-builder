@@ -9,6 +9,7 @@ import Protected from "./ProtectedRoute";
 const LoginPage = lazy(() => import("../pages/loginPage/loginPage"));
 const BatchesPage = lazy(() => import("../pages/batchCard/index"));
 const UsersPage = lazy(() => import("../pages/UsersPage/usersPage"));
+const UserForm = lazy(() => import("../pages/userFormPage/index"));
 
 const RoutesComponent = () => {
   const isUserLoggedIn = useSelector(getLoginStatus);
@@ -38,6 +39,7 @@ const RoutesComponent = () => {
         <Route element={<Protected />}>
           <Route path="/batches" element={<BatchesPage />} />
           <Route path="/batches/:id" element={<UsersPage />} />
+          <Route path="/form" element={<UserForm />} />
         </Route>
         <Route element={<NotFoundPage />} path="*" />
       </Routes>

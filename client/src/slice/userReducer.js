@@ -38,6 +38,7 @@ export const userSlice = createSlice({
 
 export const { login: loginAction, logout: logoutAction } = userSlice.actions;
 export const getLoginStatus = (state) => state.user.token.length !== 0;
+export const getId = (state) => state.user.id;
 export const getName = (state) => state.user.name;
 export const getRole = (state) => state.user.role;
 export const getToken = (state) => state.user.token;

@@ -12,10 +12,10 @@ import {
 import { LoginBox, LoginContainer } from "./login.styles";
 import { Email, Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import { lightTheme } from "../../Constants";
-import { api } from "../../api";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginAction } from "../../slice/userReducer";
+import api from "../../api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
